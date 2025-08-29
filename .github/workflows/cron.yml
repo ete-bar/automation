@@ -1,0 +1,17 @@
+name: Nightly Jobs
+on:
+  schedule:
+    - cron: "15 2 * * *"    # 02:15 UTC daily
+  workflow_dispatch: {}
+jobs:
+  notion_sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.11' }
+      - run: pip install -r requirements.txt
+      - env:
+          NOTION_TOKEN: ${{ secrets.NOTION_TOKEN }}
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        run: python jobs/notion_sync.py
